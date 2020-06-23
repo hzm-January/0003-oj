@@ -60,3 +60,58 @@ int main(int argc,char * argv[]) {
 	return 0;
 }
 ```
+
+# A1126 Eulerian Path (25分)[dfs]
+## 题目
+判断无向图是欧拉图，半欧拉图，还是非欧拉图
+欧拉环：连通并且所有顶点的度都为偶数
+欧拉路径：连通并且仅有两个顶点的度为奇数，其余顶点的度都为偶数
+## 分析
+1 表存储图，无向图每个顶点的邻接顶点个数即为顶点的度
+2 dfs判断图是否连通
+## Code
+```C++
+#include <iostream>
+#include <vector>
+using namespace std;
+/*
+	欧拉环：连通并且所有顶点的度都为偶数
+	欧拉路径：连通并且仅有两个顶点的度为奇数，其余顶点的度都为偶数
+*/
+const int maxn = 510;
+int n,m,cnt,odd,vis[maxn];
+vector<int> g[maxn];
+void dfs(int v) {
+	cnt++;
+	vis[v]=1;
+	if(g[v].size()==0)return;
+	for(int i=0; i<g[v].size(); i++)
+		if(vis[g[v][i]]==0)dfs(g[v][i]);
+}
+int main(int argc,char * argv[]) {
+	// 1 建图
+	int v1,v2;
+	scanf("%d%d",&n,&m);
+	for(int i=0; i<m; i++) {
+		scanf("%d%d",&v1,&v2);
+		g[v1].push_back(v2);
+		g[v2].push_back(v1);
+	}
+	// 2 dfs判断是否连通
+	dfs(1);
+	// 3 判断 打印
+	for(int i=1; i<=n; i++) {
+		if(i!=1)printf(" ");
+		printf("%d",g[i].size());
+		if(g[i].size()%2!=0) odd++;
+	}
+	printf("\n");
+	if(odd==0&&cnt==n)
+		printf("Eulerian");
+	else if(odd==2&&cnt==n)
+		printf("Semi-Eulerian");
+	else
+		printf("Non-Eulerian");
+	return 0;
+}
+```
